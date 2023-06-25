@@ -1,0 +1,156 @@
+<!--page-wrapper-->
+<div class="page-wrapper">
+    <!--page-content-wrapper-->
+    <div class="page-content-wrapper">
+      <div class="page-content">
+        <!--breadcrumb-->
+        <div class="page-breadcrumb d-md-flex align-items-center mb-3">
+          <div class="breadcrumb-title pr-3">Ajout d'un produit</div>
+          <div class="pl-3">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb mb-0 p-0">
+                <li class="breadcrumb-item">
+                  <a routerLink="/dashboard">
+                    <i class='bx bx-home-alt'></i>
+                  </a>
+                </li>
+                <li class="breadcrumb-item">Stock</li>
+                <li class="breadcrumb-item active" aria-current="page">Ajout d'un produit</li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+        <!--end breadcrumb-->
+
+        <div *ngIf="errorMessage; else noErrorMessage">
+          <div class="alert bg-danger text-white alert-dismissible fade show mt-4 mb-5">
+            {{ errorMessage }}
+          </div>
+          <div class="mt-5 text-center ">
+            <a (click)="goBack()" class="btn btn-lg btn-outline-primary ml-3 radius-30">Retour</a>
+          </div>
+        </div>
+
+        <ng-template #noErrorMessage>
+          <div class="col-12 col-lg-8 mt-3 mx-auto">
+            <div class="card border-lg-top-primary">
+              <div class="card-body p-4">
+                <div class="card-title text-center">
+                  <h4 class="mb-0 text-primary text-center">Ajout d'un produit</h4>
+                </div>
+                <hr/>
+                <form [formGroup]="produitForm" enctype="multipart/form-data" (ngSubmit)="onProduitFormSubmit()">
+                  <div class="form-body">
+                    <div class="form-row">
+                      <div class="form-group col-md-6">
+                        <label>Code</label>
+                        <input type="text" class="form-control"
+                                formControlName="code"
+                                placeholder="Code">
+                        <div *ngIf="submitted && code.invalid" class="errors text-danger">
+                          <span>Ce champ est requis *</span>
+                        </div>
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label>Nom</label>
+                        <input type="text" class="form-control"
+                                placeholder="Nom"
+                                formControlName="nom">
+                        <div class="errors text-danger">
+                          <span *ngIf="submitted && nom.hasError('required')">Ce champ est requis *</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label>Description</label>
+                      <textarea class="form-control" placeholder="Description"
+                                rows="3" cols="3"
+                                formControlName="description">
+                      </textarea>
+                    </div>
+                   
+                    <div class="form-row">
+                      <div class="form-group col-md-6">
+                        <label>Prix</label>
+                        <input type="number" class="form-control"
+                                placeholder="Prix"
+                                formControlName="prix"
+                                min="0" oninput="validity.valid||(value='');">
+                      </div>
+                   
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group col-md-6">
+                        <label>Quantité à enregistrer</label>
+                        <input type="number" class="form-control"
+                                placeholder="Quantité à enregistrer"
+                                formControlName="quantite"
+                                min="0" oninput="validity.valid||(value='');">
+                        <div class="errors text-danger">
+                          <span *ngIf="submitted && quantite.hasError('required')">Ce champ est requis *</span>
+                        </div>
+                      </div>
+                     
+                    </div>
+                  
+                    <div class="form-row">
+                      <div class="form-group col-md-6">
+                        <label>Date d'expiration</label>
+                        <!-- <input class="result form-control" type="date" id="date_expiration"
+                              formControlName="date_expiration"
+                              placeholder="Définir une date"> -->
+                        <input class="result form-control" type="date"
+                                formControlName="date_expiration" placeholder="Définir une date">
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label>Date d'alerte</label>
+                        <!-- <input class="result form-control" type="date" id="date_alerte"
+                              formControlName="date_alerte"
+                              placeholder="Définir une date"> -->
+                        <input class="result form-control" type="date"
+                              formControlName="date_alerte"
+                              placeholder="Définir une date">
+                      </div>
+                    </div>
+                   
+                    
+                    <div class="form-group">
+                      <label for="image_produit"
+                        class="btn border">
+                        <i class="lni lni-image mr-1 parent-icon icon-color-4"></i>
+                        Choisir une image pour le produit
+                      </label>
+
+                      <div class="container border text-center">
+                        <div class="bg-transparent pt-1">
+                          <img id="box_image_produit" src="" alt="image"
+                                style="max-width: 256px; max-height: 256px; min-width: 114px; min-height: 110px;">
+                        </div>
+                        <!-- <img id="box_image_produit" class="text-center" src="{{ produit.image }}"/> -->
+                        <input type='file' accept="image/*" class="mb-0"
+                          (change)="previewImageProduit($event)"
+                          formControlName="image"
+                          name='image_produit' id='image_produit' placeholder="image" style="opacity: 0;"
+                          required="true" />
+                        <div class="errors text-danger">
+                          <span *ngIf="submitted && image.hasError('required')">Ce champ est requis *</span>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <hr class="mt-4"/>
+                    <div class="d-flex justify-content-between">
+                      <button type="button" class="btn btn-danger w-25">Annuler</button>
+                      <button type="submit" class="btn btn-primary w-25">Enregistrer</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+  <!--end page-content-wrapper-->

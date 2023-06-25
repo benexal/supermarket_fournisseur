@@ -1,0 +1,557 @@
+<!--page-wrapper-->
+<div class="page-wrapper">
+    <!--page-content-wrapper-->
+    <div class="page-content-wrapper">
+      <div class="page-content">
+        <!--breadcrumb-->
+        <div class="page-breadcrumb d-md-flex align-items-center mb-1">
+          <div class="breadcrumb-title pr-3">Produits</div>
+          <div class="pl-3">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb mb-0 p-0">
+                <li class="breadcrumb-item"><a routerLink="/dashboard"><i class='bx bx-home-alt'></i></a>
+                </li>
+                <li class="breadcrumb-item">Stock</li>
+                <li class="breadcrumb-item active" aria-current="page">Produits</li>
+              </ol>
+            </nav>
+          </div>
+          <!-- <div class="ml-auto">
+            <div class="btn-group">
+              <button type="button" class="btn btn-primary">Settings</button>
+              <button type="button" class="btn btn-primary bg-split-primary dropdown-toggle dropdown-toggle-split"
+                data-toggle="dropdown"> <span class="sr-only">Toggle Dropdown</span>
+              </button>
+              <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left"> <a class="dropdown-item"
+                  href="javascript:;">Action</a>
+                <a class="dropdown-item" href="javascript:;">Another action</a>
+                <a class="dropdown-item" href="javascript:;">Something else here</a>
+                <div class="dropdown-divider"></div> <a class="dropdown-item" href="javascript:;">Separated link</a>
+              </div>
+            </div>
+          </div> -->
+        </div>
+        <!--end breadcrumb-->
+  
+        <div *ngIf="errorMessage; else noErrorMessage">
+          <div class="alert bg-danger text-white alert-dismissible fade show mt-4 mb-5">
+            {{ errorMessage }}
+          </div>
+          <!-- <div class="mt-5 text-center ">
+            <a class="btn btn-lg btn-outline-primary ml-3 radius-30">Retour</a>
+          </div> -->
+        </div>
+        <ng-template #noErrorMessage>
+          <div class="alert alert-success bg-success text-white text-center border-0 alert-dismissible"
+              role="alert" *ngIf="produitSuccessMessage">
+            <i class="bi bi-check-circle me-1"></i>
+            <i class="bi bi-exclamation-octagon me-1"></i>
+            {{ produitSuccessMessage }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <!-- Button trigger modal -->
+          <div class="d-md-flex align-items-center mb-3" routerLink="/produit-add">
+            <div class="ml-auto">
+              <button type="button" class="btn btn-primary">
+                <i class="lni lni-circle-plus"> </i>
+                Produit
+              </button>
+            </div>
+          </div>
+          <!-- End Button trigger modal -->
+  
+          <div class="card radius-15">
+            <div class="card-header border-bottom-0 mb-0">
+              <div class="d-flex align-items-center">
+                <div>
+                  <h5 class="mb-0">Liste des produits</h5>
+                </div>
+              </div>
+            </div>
+            <hr class="m-0 p-0">
+            <div class="card-body mt-0">
+              <div class="table-responsive">
+                <table id="tableProduit" class="table table-striped table-bordered mb-0" datatable
+                  [dtOptions]="dtOptions" #tableProduit>
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th class="text-center align-middle">Photo</th>
+                      <th class="text-center align-middle">Code</th>
+                      <th class="text-center align-middle">Nom</th>
+                      <!-- <th>Description</th> -->
+                      <!-- <th>Prix d'acquisition</th> -->
+                      <th class="text-center align-middle">Prix de vente</th>
+                      <th class="text-center align-middle">Quantité</th>
+                     
+                    
+                      <th class="text-center align-middle border">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let produit of produits, index as i">
+                      <td>{{ i+1 + (pageLength * (pageIndex - 1)) }}</td>
+                      <td class="p-1">
+                        <div class="product-img bg-transparent" style="width: 95%; height: 95%;" data-toggle="modal"
+                            [attr.data-target]="'#produit_' + produit.id + '_ImageModal'" title="Clicker pour voir l'image">
+                          <img class="border" src="{{ produit.image }}" width="60" height="60" alt="image">
+                        </div>
+  
+                        <!-- Modal Produit Image -->
+                        <div class="modal fade" id="produit_{{ produit.id }}_ImageModal" tabindex="-1" role="dialog" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                              <div class="">
+                                <div class="card mb-0">
+                                  <img src="{{  produit.image  }}" class="card-img-top" alt="image"
+                                        *ngIf="produit.image">
+                                  <div class="card-body">
+                                    <h5 class="card-title">{{ produit.nom }}</h5>
+                                    <p class="card-text">
+                                      {{ produit.description }}
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- End Modal Produit Image -->
+                      </td>
+  
+                      <td>{{ produit.code }}</td>
+                      <td>{{ produit.nom }}</td>
+                      <!-- <td>{{ produit.description }}</td>
+                      <td>{{ produit.prix_acquisition }}</td> -->
+                      <td class="text-right">{{ produit.prix }}F</td>
+                      <td class="text-right">{{ produit.quantite }}</td>
+                      
+                      <!-- <td>{{ produit.date_expiration }}</td>
+                      <td>{{ produit.date_alerte }}</td> -->
+                      <!-- <td>{{ produit.categorie.libelle }}</td> -->
+                      <!-- <td>{{ produit.type.libelle }}</td> -->
+                      <!-- <td>produit.gestionnaire_stock</td> -->
+                      <!-- <td>
+                        <p *ngFor="let fournisseur of produit.fournisseurs, index as j">
+                          {{ fournisseur.last_name }} {{ fournisseur.first_name }}
+                        </p>
+                      </td> -->
+                     
+                      <td class="p-0 text-center border">
+                        <!-- <ul style="list-style: none; display: block; justify-content: space-between; writing-mode: horizontal-tb">
+                          <li class="">
+                            <i class="lni lni-eye parent-icon icon-color-9"></i>
+                          </li>
+                          <li  class="">
+                              <i class="bx bx-edit parent-icon icon-color-4"></i>
+                          </li>
+                          <li class="">
+                            <i class="bx bx-trash text-danger"></i>
+                          </li>
+                        </ul> -->
+  
+                        <!-- <a class="btn btn-primary radius-5" (click)="onSelect(produit)" routerLink="/produits/{{ produit.id }}/details">
+                          Editer
+                        </a> -->
+  
+                        <a class="m-0 p-0 btn" title="Retirer une quantité du stock" (click)="changeRetirerQuantite(produit)"
+                          data-toggle="modal" [attr.data-target]="'#reduireProduit' + produit.id + 'Modal'">
+                          <i class="lni lni-circle-minus parent-icon text-black"></i>
+                        </a>
+  
+                        <!-- Retirer une quantité du stock du produit -->
+                        <div class="modal fade" [id]="'reduireProduit' + produit.id + 'Modal'" tabindex="-1" role="dialog"
+                          aria-hidden="true">
+                          <form [formGroup]="retirerQuantiteProduitForm"
+                            (ngSubmit)="onRetirerQuantiteProduitFormSubmit(produit)">
+                            <div class="modal-dialog modal-dialog-scrollable">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <div class="modal-title d-flex align-items-center">
+                                    <div><i class='bx bx-menu mr-1 font-24 text-primary'></i>
+                                    </div>
+                                    <h4 class="mb-0 text-primary">Retirer une quantité en stock</h4>
+                                  </div>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <div class="modal-body p-0">
+                                  <div class="card m-0">
+                                    <div class="card-body">
+                                      <div class="alert bg-danger text-white alert-dismissible fade show mt-1" *ngIf="errorRetirerQuantiteProduitForm">
+                                        {{ errorRetirerQuantiteProduitForm }}
+                                      </div>
+                                      <h6>
+                                        Quantité à retirer en stock pour le produit "{{ produit.nom }}"
+                                      </h6>
+                                      <input type="hidden" name="idReduireProduit{{ produit.id }}" formControlName="idProduit"
+                                        [id]="'idReduireProduit' + produit.id" [value]="produit.id">
+                                      <input type="number" name="quantite" formControlName="quantite" value="1" min="1"
+                                        class="form-control text-right" value="1" oninput="validity.valid||(value='1');"
+                                        [id]="'quantiteDelete' + produit.id">
+                                      <span class="text-small text-danger"
+                                        *ngIf="submitedRetirerQuantiteProduitForm && quantiteRetirerQuantiteProduit && quantiteRetirerQuantiteProduit.invalid">Ce
+                                        champ est requis *</span>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-danger" data-dismiss="modal">Annuler</button>
+                                  <!-- <button type="submit" class="btn btn-primary" id="btnRegisterAdmin" (click)="onRegisterPressed($event)">Enregistrer</button> -->
+                                  <button type="submit" class="btn btn-success">Enregistrer</button>
+                                </div>
+                              </div>
+                            </div>
+                          </form>
+                        </div>
+                        <!-- End Retirer une quantité du stock du produit -->
+  
+                        <a class="m-1 p-0 btn" title="Ajouter une quantité au stock" (click)="changeAjouterQuantite(produit)"
+                            data-toggle="modal" [attr.data-target]="'#addProduit' + produit.id + 'Modal'">
+                          <i class="lni lni-circle-plus parent-icon icon-color-3"></i>
+                        </a>
+  
+                        <!-- Ajouter une quantité du stock du produit -->
+                        <div class="modal fade" [id]="'addProduit' + produit.id + 'Modal'" tabindex="-1" role="dialog"
+                          aria-hidden="true">
+                          <form [formGroup]="ajouterQuantiteProduitForm"
+                            (ngSubmit)="onAjouterQuantiteProduitFormSubmit(produit)">
+                            <div class="modal-dialog modal-dialog-scrollable">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <div class="modal-title d-flex align-items-center">
+                                    <div><i class='bx bx-menu mr-1 font-24 text-primary'></i>
+                                    </div>
+                                    <h4 class="mb-0 text-primary">Ajouter une quantité au stock</h4>
+                                  </div>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <div class="modal-body p-0">
+                                  <div class="card m-0">
+                                    <div class="card-body">
+                                      <!-- <div class="alert bg-danger text-white alert-dismissible fade show mt-4" *ngIf="errorMessageAdminForm">
+                                                    {{  errorMessageAdminForm  }}
+                                                  </div> -->
+                                      <!-- </form> -->
+                                      <h6>Ajouter une quantité en stock pour le produit "{{ produit.nom }}"</h6>
+                                      <input type="hidden" name="idAddProduit{{ produit.id }}" formControlName="idProduit"
+                                        [id]="'idAddProduit' + produit.id" [value]="produit.id">
+                                      <input type="number" name="quantite" formControlName="quantite" value="1" min="1"
+                                        class="form-control text-right" value="1" oninput="validity.valid||(value='1');"
+                                        [id]="'quantiteAdd' + produit.id">
+                                      <span class="text-small text-danger"
+                                        *ngIf="submitedAjouterQuantiteProduitForm && quantiteAjouterQuantiteProduit && quantiteAjouterQuantiteProduit.invalid">Ce
+                                        champ est requis *</span>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-danger" data-dismiss="modal">Annuler</button>
+                                  <!-- <button type="submit" class="btn btn-primary" id="btnRegisterAdmin" (click)="onRegisterPressed($event)">Enregistrer</button> -->
+                                  <button type="submit" class="btn btn-success">Enregistrer</button>
+                                </div>
+                              </div>
+                            </div>
+                          </form>
+                        </div>
+                        <!-- End Ajouter une quantité du stock du produit -->
+  
+                        <a class="m-1 p-0 btn" title="Voir les détail du produit"
+                          routerLink="/produits/{{ produit.id }}/details">
+                          <i class="lni lni-eye parent-icon icon-color-9"></i>
+                        </a>
+                        <span class="m-1 p-0 btn" title="Modifier le produit" (click)="onSelect(produit)"
+                          [class.selected]="produit === selectedProduit"
+                          data-toggle="modal" data-target="#editProduitModal">
+                          <i class="bx bx-edit parent-icon icon-color-4"></i>
+                        </span>
+  
+                        <span class="m-0 p-0 btn" title="Supprimer le produit">
+                          <a class="mr-0 p-0 btn" data-toggle="modal"
+                          attr.data-target="#deleteCategorieProduit_{{ produit.id }}_Modal">
+                          <i class="bx bx-trash text-danger"></i>
+                      </a>
+
+
+
+                        <!-- Modal Supprimer produit-->
+                        <div class="modal fade" id="deleteCategorieProduit_{{ produit.id }}_Modal" tabindex="-1"
+                            role="dialog" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-scrollable">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <div
+                                                class="modal-title d-flex align-items-center w-100">
+                                                <h4 class="mb-0 text-primary text-center  mx-auto">
+                                                    Suppression d'un produit</h4>
+                                            </div>
+                                            <button type="button" class="close" data-dismiss="modal"
+                                                aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body p-0">
+                                            <div class="card m-0">
+                                                <div class="card-body">
+                                                    <div class="form-body text-center text-large">
+                                                      <p class="h5">Voulez-vous supprimer <span class="text-dark h4">"{{ produit.nom }}"</span> ?</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="m-3">
+                                            <hr class="mt-2" />
+                                            <div class="d-flex justify-content-between">
+                                                <button type="button"
+                                                    class="btn btn-danger w-25 p-1" data-dismiss="modal">Annuler</button>
+                                                <button type="button"
+                                                        class="btn btn-primary w-25 p-1">
+                                                    Supprimer
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                        <!-- End Modal Supprimer Catégorie-->
+
+
+
+                        </span>
+                      </td>
+                    </tr>
+                    <!-- <tr>
+                      <td>
+                        <div class="product-img bg-transparent border">
+                          <img src="../assets/images/icons/watch.png" width="35" alt="">
+                        </div>
+                      </td>
+                      <td>Hand Watch</td>
+                      <td>Milona Burke</td>
+                      <td>#987546</td>
+                      <td>$43.78</td>
+                      <td><a href="javascript:;" class="btn btn-sm btn-light-warning btn-block radius-30">Pending</a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class="product-img bg-transparent border">
+                          <img src="../assets/images/icons/laptop.png" width="35" alt="">
+                        </div>
+                      </td>
+                      <td>Mini Laptop</td>
+                      <td>Craig Clayton</td>
+                      <td>#325687</td>
+                      <td>$62.21</td>
+                      <td><a href="javascript:;" class="btn btn-sm btn-light-success btn-block radius-30">Delivered</a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class="product-img bg-transparent border">
+                          <img src="../assets/images/icons/shirt.png" width="35" alt="">
+                        </div>
+                      </td>
+                      <td>Slim-T-Shirt</td>
+                      <td>Clark Andola</td>
+                      <td>#658972</td>
+                      <td>$75.68</td>
+                      <td><a href="javascript:;" class="btn btn-sm btn-light-danger btn-block radius-30">Cancelled</a>
+                      </td>
+                    </tr> -->
+                  </tbody>
+                </table>
+  
+                <!-- <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageIndex]="pageIndex" (page)="loadData(pageEvent.pageIndex, pageEvent.pageSize)"></mat-paginator> -->
+  
+                <!-- <app-nav-button [text]="'1'" [navigate]="navigate_produit.bind(this, 2)"></app-nav-button> -->
+  
+                <div class="dataTables_info" id="tableProduit_info" role="status" aria-live="polite">
+                  Affichage de {{ START }} à {{ END }} sur {{ nombre_total_produits }} entrées
+                </div>
+  
+                <div class="dataTables_paginate paging_full_numbers pull-right" id="tableProduit_paginate">
+                  <ul class="pagination">
+                    <li class="paginate_button page-item first" id="tableProduit_first">
+                      <!-- <app-nav-button [text]="'First'" [navigate]="navigate_produit.bind(this, 1)"></app-nav-button> -->
+                      <a class="page-link" (click)="go_to_first_page()">First</a>
+                    </li>
+                    <li class="paginate_button page-item previous" id="tableProduit_previous">
+                      <!-- <a aria-controls="tableProduit" data-dt-idx="1" tabindex="0" class="page-link">Prev</a> -->
+                      <app-nav-button [text]="'Prev'" [navigate]="navigate_produit.bind(this, pageIndex - 1)" aria-controls="tableProduit"></app-nav-button>
+                    </li>
+                    <!-- <li class="paginate_button page-item">
+                      <app-nav-button [text]="'1'" [navigate]="navigate_produit.bind(this, 1)" aria-controls="tableProduit"></app-nav-button>
+                    </li>
+                    <li class="paginate_button page-item">
+                      <app-nav-button [text]="'2'" [navigate]="navigate_produit.bind(this, 2)" aria-controls="tableProduit"></app-nav-button>
+                    </li> -->
+  
+                    <li class="paginate_button page-item" *ngIf="(pageIndex - 2 > 0) && (pageIndex === totalPages)">
+                      <app-nav-button [text]="(pageIndex - 2).toString()" [navigate]="navigate_produit.bind(this, pageIndex-2)" aria-controls="tableProduit"></app-nav-button>
+                    </li>
+                    <li class="paginate_button page-item" *ngIf="pageIndex - 1 > 0">
+                      <app-nav-button [text]="(pageIndex - 1).toString()" [navigate]="navigate_produit.bind(this, pageIndex-1)" aria-controls="tableProduit"></app-nav-button>
+                    </li>
+                    <li class="paginate_button page-item active pageIndex">
+                      <app-nav-button [text]="pageIndex.toString()" [navigate]="navigate_produit.bind(this, pageIndex)" aria-controls="tableProduit"></app-nav-button>
+                    </li>
+                    <li class="paginate_button page-item" *ngIf="pageIndex + 1 <= totalPages">
+                      <app-nav-button [text]="(pageIndex + 1).toString()" [navigate]="navigate_produit.bind(this, pageIndex+1)" aria-controls="tableProduit"></app-nav-button>
+                    </li>
+                    <li class="paginate_button page-item" *ngIf="(pageIndex - 1 === 0) && (pageIndex + 1 <= totalPages)">
+                      <app-nav-button [text]="(pageIndex + 2).toString()" [navigate]="navigate_produit.bind(this, pageIndex+2)" aria-controls="tableProduit"></app-nav-button>
+                    </li>
+  
+                    <!-- <li class="paginate_button page-item">
+                      <app-nav-button [text]="'6'" [navigate]="navigate_produit.bind(this, 6)" aria-controls="tableProduit"></app-nav-button>
+                    </li>
+                    <li class="paginate_button page-item">
+                      <app-nav-button [text]="'7'" [navigate]="navigate_produit.bind(this, 7)" aria-controls="tableProduit"></app-nav-button>
+                    </li> -->
+                    <li class="paginate_button page-item next" id="tableProduit_next">
+                      <app-nav-button [text]="'Next'" [navigate]="navigate_produit.bind(this, pageIndex + 1)" aria-controls="tableProduit"></app-nav-button>
+                      <!-- <a href="#" aria-controls="tableProduit" data-dt-idx="9" tabindex="0" class="page-link">Next</a> -->
+                    </li>
+                    <li class="paginate_button page-item last" id="tableProduit_last">
+                      <!-- <app-nav-button [text]="'Last'" [navigate]="navigate_produit.bind(this, totalPages)"></app-nav-button> -->
+                      <a class="page-link" (click)="go_to_last_page()">Last</a>
+                    </li>
+                  </ul>
+                </div>
+  
+                <!-- <div class="dataTables_paginate paging_full_numbers" id="tableProduit_paginate">
+                  <ul class="pagination">
+                    <li class="paginate_button page-item first" id="tableProduit_first"><a href="#" aria-controls="tableProduit"
+                        data-dt-idx="0" tabindex="0" class="page-link">First</a></li>
+                    <li class="paginate_button page-item previous" id="tableProduit_previous"><a href="#" aria-controls="tableProduit"
+                        data-dt-idx="1" tabindex="0" class="page-link">Prev</a></li>
+                    <li class="paginate_button page-item "><a href="#" aria-controls="tableProduit" data-dt-idx="2" tabindex="0"
+                        class="page-link">1</a></li>
+                    <li class="paginate_button page-item active"><a href="#" aria-controls="tableProduit" data-dt-idx="3" tabindex="0"
+                        class="page-link">2</a></li>
+                    <li class="paginate_button page-item "><a href="#" aria-controls="tableProduit" data-dt-idx="4" tabindex="0"
+                        class="page-link">3</a></li>
+                    <li class="paginate_button page-item "><a href="#" aria-controls="tableProduit" data-dt-idx="5" tabindex="0"
+                        class="page-link">4</a></li>
+                    <li class="paginate_button page-item next" id="tableProduit_next"><a href="#" aria-controls="tableProduit"
+                        data-dt-idx="6" tabindex="0" class="page-link">Next</a></li>
+                    <li class="paginate_button page-item last" id="tableProduit_last"><a href="#" aria-controls="tableProduit"
+                        data-dt-idx="7" tabindex="0" class="page-link">Last</a></li>
+                  </ul>
+                </div> -->
+              </div>
+            </div>
+          </div>
+  
+          <!-- Modal Register Produit-->
+          <div class="modal fade" id="registerProduitModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <!-- <form [formGroup]="administrateurForm" (ngSubmit)="onAdminFormSubmit()"> -->
+            <!-- <form [formGroup]="administrateurForm"> -->
+            <div class="modal-dialog modal-dialog-scrollable">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <div class="modal-title d-flex align-items-center">
+                    <div><i class='bx bxs-user mr-1 font-24 text-primary'></i>
+                    </div>
+                    <!-- <h4 class="mb-0 text-primary">{{ titreFormulaire }}</h4> -->
+                  </div>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body p-0">
+                  <div class="card m-0">
+                    <div class="card-body">
+                      <!-- <div class="alert bg-danger text-white alert-dismissible fade show mt-4" *ngIf="errorMessageAdminForm">
+                            {{  errorMessageAdminForm  }}
+                          </div> -->
+                      <!-- </form> -->
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-danger" data-dismiss="modal">Annuler</button>
+                  <!-- <button type="submit" class="btn btn-primary" id="btnRegisterAdmin" (click)="onRegisterPressed($event)">Enregistrer</button> -->
+                  <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </div>
+              </div>
+            </div>
+            <!-- </form> -->
+          </div>
+  
+          <!-- Modal Edit Produit-->
+          <div class="modal fade" id="editProduitModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <!-- <form [formGroup]="administrateurForm" (ngSubmit)="onAdminFormSubmit()"> -->
+            <!-- <form [formGroup]="administrateurForm"> -->
+            <div class="modal-dialog modal-dialog-scrollable">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <div class="modal-title d-flex align-items-center">
+                    <div><i class='bx bxs-user mr-1 font-24 text-primary'></i>
+                    </div>
+                    <h4 class="mb-0 text-primary">Editer le produit</h4>
+                  </div>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body p-0">
+                  <div class="card m-0">
+                    <div class="card-body">
+                      <!-- <div class="alert bg-danger text-white alert-dismissible fade show mt-4" *ngIf="errorMessageAdminForm">
+                            {{  errorMessageAdminForm  }}
+                          </div> -->
+                      <!-- </form> -->
+  
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-danger" data-dismiss="modal">Annuler</button>
+                  <!-- <button type="submit" class="btn btn-primary" id="btnRegisterAdmin" (click)="onRegisterPressed($event)">Enregistrer</button> -->
+                  <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </div>
+              </div>
+            </div>
+            <!-- </form> -->
+          </div>
+  
+  
+  
+          <!-- <div *ngIf="selectedAdministrateur" class="card mb-5 col-md-6 mx-auto">
+          <div class="card-body">
+            <h2>Details de {{selectedAdministrateur.last_name | uppercase}} {{selectedAdministrateur.first_name}}</h2>
+            <div class="mb-3">
+              <label for="administrateur-last_name">Nom: </label>
+              <input id="administrateur-last_name"  class="form-control" [(ngModel)]="selectedAdministrateur.last_name" placeholder="Entrez le nom">
+            </div>
+            <div class="mb-3">
+              <label for="administrateur-first_name">Prénom$: </label>
+              <input id="administrateur-first_name"  class="form-control" [(ngModel)]="selectedAdministrateur.first_name" placeholder="Entrez le prénom">
+            </div>
+            <div class="mb-3">
+              <label for="administrateur-email">Email: </label>
+              <input id="administrateur-email"  class="form-control" [(ngModel)]="selectedAdministrateur.email" placeholder="Entrez l'email'">
+            </div>
+            <div class="mb-3">
+              <label for="administrateur-adresse">Adresse: </label>
+              <input id="administrateur-adresse"  class="form-control" [(ngModel)]="selectedAdministrateur.adresse" placeholder="Entrez l'adresse">
+            </div>
+            <div class="mb-3">
+              <label for="administrateur-num_telephone">Numérode téléphone: </label>
+              <input id="administrateur-num_telephone"  class="form-control" [(ngModel)]="selectedAdministrateur.num_telephone" placeholder="Entrez le numéro de téléphone">
+            </div>
+          </div>
+        </div> -->
+        </ng-template>
+      </div>
+    </div>
+    <!--end page-content-wrapper-->
+  </div>
+  <!--end page-wrapper-->

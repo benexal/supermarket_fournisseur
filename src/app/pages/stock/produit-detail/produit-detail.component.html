@@ -1,0 +1,250 @@
+<!--page-wrapper-->
+<div class="page-wrapper">
+  <!--page-content-wrapper-->
+  <div class="page-content-wrapper">
+    <div class="page-content">
+      <!--breadcrumb-->
+      <div class="page-breadcrumb d-md-flex align-items-center mb-3">
+        <div class="breadcrumb-title pr-3">Détails du produit</div>
+        <div class="pl-3">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0 p-0">
+              <li class="breadcrumb-item">
+                <a routerLink="/dashboard">
+                  <i class='bx bx-home-alt'></i>
+                </a>
+              </li>
+              <li class="breadcrumb-item">Stock</li>
+              <li class="breadcrumb-item active" aria-current="page">Détails du produit</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+      <!--end breadcrumb-->
+
+      <div *ngIf="errorMessage; else noErrorMessage">
+        <div class="alert bg-danger text-white alert-dismissible fade show mt-4 mb-5">
+          {{ errorMessage }}
+        </div>
+        <div class="mt-5 text-center ">
+          <a (click)="goBack()" class="btn btn-lg btn-outline-primary ml-3 radius-30">Retour</a>
+        </div>
+      </div>
+
+      <ng-template #noErrorMessage>
+       
+
+
+        <div class="col-12 col-lg-8 mt-3 mx-auto">
+          <div class="card border-lg-top-primary">
+            <div class="card-body p-4">
+              <div class="card-title text-center">
+                <h4 class="mb-0 text-primary text-center">Mise à jour du produit</h4>
+              </div>
+              <hr/>
+              <form [formGroup]="produitForm" enctype="multipart/form-data" *ngIf="produit" (ngSubmit)="onProduitUpdateFormSubmit()">
+                <div class="form-body">
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label>Code</label>
+                      <input type="text" class="form-control"
+                              formControlName="code"
+                              placeholder="Code"
+                              [value]="produit.code">
+                      <div *ngIf="submitted && code.invalid" class="errors text-danger">
+                        <span>Ce champ est requis *</span>
+                      </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label>Nom</label>
+                      <input type="text" class="form-control"
+                              placeholder="Nom"
+                              formControlName="nom"
+                              [value]="produit.nom">
+                      <div class="errors text-danger">
+                        <span *ngIf="submitted && nom.hasError('required')">Ce champ est requis *</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label>Description</label>
+                    <textarea class="form-control" placeholder="Description"
+                              rows="3" cols="3"
+                              formControlName="description"
+                              [value]="produit.description">
+                    </textarea>
+                  </div>
+                
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label>Prix d'acquisition</label>
+                      <input type="number" class="form-control"
+                              placeholder="Prix d'acquisition"
+                              formControlName="prix_acquisition"
+                              min="0" oninput="validity.valid||(value='');"
+                              [value]="produit.prix_acquisition">
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label>Prix de vente</label>
+                      <input type="number" class="form-control"
+                              placeholder="Prix d'achat"
+                              formControlName="prix_unitaire"
+                              min="0" oninput="validity.valid||(value='');"
+                              [value]="produit.prix_unitaire">
+                      <div class="errors text-danger">
+                        <span *ngIf="submitted && prix_unitaire.hasError('required')">Ce champ est requis *</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label>Quantité à enregistrer</label>
+                      <input type="number" class="form-control"
+                              placeholder="Quantité à enregistrer"
+                              formControlName="quantite"
+                              min="0" oninput="validity.valid||(value='');"
+                              [value]="produit.quantite">
+                      <div class="errors text-danger">
+                        <span *ngIf="submitted && quantite.hasError('required')">Ce champ est requis *</span>
+                      </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label>Quantité critique</label>
+                      <input type="number" class="form-control"
+                            placeholder="Quantité critique"
+                            formControlName="quantite_critique"
+                            min="0" oninput="validity.valid||(value='');"
+                            [value]="produit.quantite_critique">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label>Catégorie</label>
+                      <select class="form-control single-select"
+                              formControlName="categorie"
+                              placeholder="Catégorie"
+                              [value]="produit.categorie.id"
+                              #categorie_id>
+                              <option *ngFor="let categorie of all_categories"
+                                      [value]="categorie.id"
+                                      [selected]="categorie.id === produit.categorie.id">
+                                {{ categorie.libelle }}
+                              </option>
+                      </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label>Type</label>
+                      <select class="form-control single-select"
+                              formControlName="type"
+                              placeholder="Type"
+                              [value]="produit.type.id"
+                              #type_id>
+                              <option *ngFor="let type of all_types"
+                                      [value]="type.id"
+                                      [selected]="type.id === produit.type.id">
+                                {{ type.libelle }}
+                              </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label>Date d'expiration</label>
+                      <input class="result form-control" type="date" id="date_expiration"
+                            [value]="produit.date_expiration"
+                            formControlName="date_expiration"
+                            placeholder="Définir une date">
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label>Date d'alerte</label>
+                      <input class="result form-control" type="date" id="date_alerte"
+                            [value]="produit.date_alerte"
+                            formControlName="date_alerte"
+                            placeholder="Définir une date">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input"
+                              id="en_vente" *ngIf="produit.en_vente; else pasEnnvente" checked
+                              formControlName="en_vente">
+                      <ng-template #pasEnnvente>
+                        <input type="checkbox"
+                                class="custom-control-input" id="en_vente"
+                                formControlName="en_vente">
+                      </ng-template>
+                      <label class="custom-control-label" for="en_vente">Mettre en vente</label>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="image_produit"
+                      class="btn border">
+                      <i class="lni lni-image mr-1 parent-icon icon-color-4"></i>
+                      Choisir une image pour le produit
+                    </label>
+
+                    <div class="container border text-center">
+                      <div class="bg-transparent pt-1">
+                        <img id="box_image_produit" src="{{ produit.image }}" alt="image"
+                              style="max-width: 256px; max-height: 256px; min-width: 114px; min-height: 110px;">
+                      </div>
+                      <!-- <img id="box_image_produit" class="text-center" src="{{ produit.image }}"/> -->
+                      <input type='file' accept="image/*" class="mb-0"
+                        (change)="previewImageProduit($event)"
+                        formControlName="image"
+                        name='image_produit' id='image_produit' placeholder="image" style="opacity: 0;"/>
+                      <div class="errors text-danger">
+                        <span *ngIf="submitted && image.hasError('required')">Ce champ est requis *</span>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <!-- <div class="form-group">
+                    <label>Phone No.</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">	<span class="input-group-text bg-transparent"><i class='bx bx-phone'></i></span>
+                      </div>
+                      <input type="text" class="form-control border-left-0" placeholder="Phone No">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label>Email Address</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">	<span class="input-group-text bg-transparent"><i class='bx bx-envelope'></i></span>
+                      </div>
+                      <input type="text" class="form-control border-left-0" placeholder="Email Address">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label>Choose Password</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">	<span class="input-group-text bg-transparent"><i class='bx bx-lock-open-alt'></i></span>
+                      </div>
+                      <input type="text" class="form-control border-left-0" placeholder="Choose Password">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label>Confirm Password</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">	<span class="input-group-text bg-transparent"><i class='bx bx-lock-open-alt'></i></span>
+                      </div>
+                      <input type="text" class="form-control border-left-0" placeholder="Confirm Password">
+                    </div>
+                  </div> -->
+
+                  <hr class="mt-4"/>
+                  <div class="d-flex justify-content-between">
+                    <button type="button" class="btn btn-danger w-25">Annuler</button>
+                    <button type="submit" class="btn btn-primary w-25">Enregistrer</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>
+<!--end page-content-wrapper-->

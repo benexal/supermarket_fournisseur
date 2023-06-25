@@ -1,0 +1,260 @@
+<!--page-wrapper-->
+<div class="page-wrapper">
+  <!--page-content-wrapper-->
+  <div class="page-content-wrapper">
+    <div class="page-content">
+      <!--breadcrumb-->
+      <div class="page-breadcrumb d-md-flex align-items-center mb-3">
+        <div class="breadcrumb-title pr-3">Notifications</div>
+        <div class="pl-3">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0 p-0">
+              <li class="breadcrumb-item"><a routerLink="dashboard"><i class='bx bx-home-alt'></i></a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">Notifications</li>
+            </ol>
+          </nav>
+        </div>
+        <div class="ml-auto">
+          <div class="btn-group">
+            <button type="button" class="btn btn-primary">Settings</button>
+            <button type="button" class="btn btn-primary bg-split-primary dropdown-toggle dropdown-toggle-split"
+              data-toggle="dropdown"> <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left"> <a class="dropdown-item"
+                href="javascript:;">Action</a>
+              <a class="dropdown-item" href="javascript:;">Another action</a>
+              <a class="dropdown-item" href="javascript:;">Something else here</a>
+              <div class="dropdown-divider"></div> <a class="dropdown-item" href="javascript:;">Separated link</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--end breadcrumb-->
+      <div class="card radius-15">
+        <div class="card-header border-bottom-0">
+          <div class="d-flex align-items-center">
+            <div>
+              <h5 class="mb-0">Liste des notifications</h5>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table id="tableProduit" class="table table-striped table-bordered mb-0" datatable
+                [dtOptions]="dtOptions">
+              <thead>
+                <tr>
+                  <th class="align-middle">#</th>
+                  <th class="align-middle">Image</th>
+                  <th class="text-center align-middle">Code du produit</th>
+                  <th class="text-center align-middle">Nom du produit</th>
+                  <th class="text-center align-middle">Date d'alerte atteinte</th>
+                  <th class="text-center align-middle">Produit périmé</th>
+                  <th class="text-center align-middle">Rupture de stock</th>
+                  <!-- <th class="text-center align-middle">Description de la notification</th> -->
+                  <th class="text-center align-middle">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let produit of produits, index as i">
+                  <td>{{ i+1 }}</td>
+                  <td class="p-1">
+                    <div class="product-img bg-transparent" style="width: 95%; height: 95%;" data-toggle="modal"
+                      [attr.data-target]="'#produit_' + produit.id + '_ImageModal'"
+                      title="Clicker pour voir l'image">
+                      <img class="border" src="{{ produit.image }}" width="60" height="60" alt="image">
+                    </div>
+
+                    <!-- Modal Produit Image -->
+                    <div class="modal fade" id="produit_{{ produit.id }}_ImageModal" tabindex="-1" role="dialog"
+                      aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                          <div class="">
+                            <div class="card mb-0">
+                              <img src="{{  produit.image  }}" class="card-img-top" alt="image"
+                                *ngIf="produit.image">
+                              <div class="card-body">
+                                <h5 class="card-title">{{ produit.nom }}</h5>
+                                <p class="card-text">
+                                  {{ produit.description }}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- End Modal Produit Image -->
+                  </td>
+                  <td>{{ produit.code }}</td>
+                  <td>{{ produit.nom }}</td>
+                  <td class="text-center pb-2">
+                    <span class='btn btn-sm mt-0 mb-1 text-center btn-light-info radius-30' *ngIf="produit.is_alerted; else is_not_alerted">
+                      {{ produit.is_alerted_text }}
+                    </span><br>
+                    <ng-template #is_not_alerted>
+                      <span>Non</span>
+                    </ng-template>
+                  </td>
+                  <td class="text-center pb-2">
+                    <span class='btn btn-sm mt-1 pl-3 text-center btn-light-warning radius-30' *ngIf="produit.is_outdated; else is_not_outdated">
+                      {{ produit.is_outdated_text }}
+                    </span><br>
+                    <ng-template #is_not_outdated>
+                      <span>Non</span>
+                    </ng-template>
+                  </td>
+                  <td class="text-center pb-2">
+                    <span class='btn btn-sm mt-1 text-center btn-light-danger radius-30' *ngIf="produit.is_finish; else is_not_finish">
+                      {{ produit.is_finish_text }}
+                    </span><br>
+                    <ng-template #is_not_finish>
+                      <span>Non</span>
+                    </ng-template>
+                  </td>
+
+                  <td class="px-1 text-center">
+
+                    <a class="ml-0 p-0 btn" [routerLink]="['/produits/' + produit.id + '/details']">
+                      <i class="lni lni-eye parent-icon icon-color-9"></i>
+                    </a>
+                    <span class="mx-2 btn" data-toggle="modal" data-target="#editTypeModal">
+                      <i class="bx bx-edit parent-icon icon-color-4"></i>
+                    </span>
+                    <div class="mr-2 p-0 btn" data-toggle="modal"
+                         [attr.data-target]="'#deleteProduit_' + produit.id + '_Modal'">
+                      <i class="bx bx-trash text-danger"></i>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- <div class="card radius-15">
+        <div class="card-body">
+          <div class="card-title">
+            <h4 class="mb-0">Basic examples</h4>
+          </div>
+          <hr/>
+          <div class="alert alert-primary alert-dismissible fade show" role="alert">A simple primary alert—check it out!
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">	<span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="alert alert-secondary alert-dismissible fade show" role="alert">A simple secondary alert—check it out!
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">	<span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="alert alert-success alert-dismissible fade show" role="alert">A simple success alert—check it out!
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">	<span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">A simple danger alert—check it out!
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">	<span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="alert alert-warning alert-dismissible fade show" role="alert">A simple warning alert—check it out!
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">	<span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="alert alert-info alert-dismissible fade show" role="alert">A simple info alert—check it out!
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">	<span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="alert alert-light alert-dismissible fade show" role="alert">A simple light alert—check it out!
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">	<span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="alert alert-dark alert-dismissible fade show" role="alert">A simple dark alert—check it out!
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">	<span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="card radius-15">
+        <div class="card-body">
+          <div class="card-title">
+            <h4 class="mb-0">Alert with links</h4>
+          </div>
+          <hr/>
+          <div class="alert alert-primary alert-dismissible fade show" role="alert">A simple primary alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">	<span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="alert alert-secondary alert-dismissible fade show" role="alert">A simple secondary alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">	<span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="alert alert-success alert-dismissible fade show" role="alert">A simple success alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">	<span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">A simple danger alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">	<span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="alert alert-warning alert-dismissible fade show" role="alert">A simple warning alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">	<span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="alert alert-info alert-dismissible fade show" role="alert">A simple info alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">	<span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="alert alert-light alert-dismissible fade show" role="alert">A simple light alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">	<span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="alert alert-dark alert-dismissible fade show" role="alert">A simple dark alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">	<span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="card radius-15">
+        <div class="card-body">
+          <div class="card-title">
+            <h4 class="mb-0">Additional content</h4>
+          </div>
+          <hr/>
+          <div class="alert alert-primary" role="alert">
+            <h4 class="alert-heading">Well done!</h4>
+            <p>Aww yeah, you successfully read this important alert message. This example text is going to run a bit longer so that you can see how spacing within an alert works with this kind of content.</p>
+            <hr>
+            <p class="mb-0">Whenever you need to, be sure to use margin utilities to keep things nice and tidy.</p>
+          </div>
+          <div class="alert alert-success" role="alert">
+            <h4 class="alert-heading">Well done!</h4>
+            <p>Aww yeah, you successfully read this important alert message. This example text is going to run a bit longer so that you can see how spacing within an alert works with this kind of content.</p>
+            <hr>
+            <p class="mb-0">Whenever you need to, be sure to use margin utilities to keep things nice and tidy.</p>
+          </div>
+          <div class="alert alert-info" role="alert">
+            <h4 class="alert-heading">Well done!</h4>
+            <p>Aww yeah, you successfully read this important alert message. This example text is going to run a bit longer so that you can see how spacing within an alert works with this kind of content.</p>
+            <hr>
+            <p class="mb-0">Whenever you need to, be sure to use margin utilities to keep things nice and tidy.</p>
+          </div>
+          <div class="alert alert-danger" role="alert">
+            <h4 class="alert-heading">Well done!</h4>
+            <p>Aww yeah, you successfully read this important alert message. This example text is going to run a bit longer so that you can see how spacing within an alert works with this kind of content.</p>
+            <hr>
+            <p class="mb-0">Whenever you need to, be sure to use margin utilities to keep things nice and tidy.</p>
+          </div>
+          <div class="alert alert-dark" role="alert">
+            <h4 class="alert-heading">Well done!</h4>
+            <p>Aww yeah, you successfully read this important alert message. This example text is going to run a bit longer so that you can see how spacing within an alert works with this kind of content.</p>
+            <hr>
+            <p class="mb-0">Whenever you need to, be sure to use margin utilities to keep things nice and tidy.</p>
+          </div>
+        </div>
+      </div> -->
+    </div>
+  </div>
+  <!--end page-content-wrapper-->
+</div>
+<!--end page-wrapper-->
