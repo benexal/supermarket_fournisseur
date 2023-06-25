@@ -1,2 +1,2 @@
 # supermarket_fournisseur
-la partie fournissuer du projet de supermarché
+la partie fournisseur du projet de supermarché
